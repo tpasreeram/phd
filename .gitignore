@@ -1,0 +1,24 @@
+# Python
+.venv/
+.ipynb_checkpoints/
+*.ipynb
+*.pyc
+
+# Archived shit
+archive/
+
+# Images/Documents
+*.png
+*.pdf
+
+# LaTeX Files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.tex
+*.bib

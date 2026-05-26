@@ -111,11 +111,11 @@ def plot(result, tlist, obs):
         
         for g_name, runs in grouped.items():
             for r_name, result_m in runs.items():
-                ax.plot(tlist, np.log10(result_m), label=f"{g_name} | {r_name}")
-            ax.set_title("Emission")
-            ax.set_ylabel("Normalized Emission (log10)")
-            ax.set_xlabel("")
-            ax.legend()
+                ax.plot(tlist, np.log10(result_m), label=f"{g_name} | {r_name}", linewidth=4)
+            ax.set_title("Emission", fontsize=16)
+            ax.set_ylabel("Normalized Emission (log10)",fontsize=16)
+            ax.set_xlabel("time", fontsize=16)
+            ax.legend(fontsize=12)
 
         # for ax, g_name in zip(axes, g_names):
         #     for r_name, result_m in grouped[g_name].items():
@@ -161,8 +161,8 @@ def plot(result, tlist, obs):
 def get_rho(N):
     return {
         "rho0": exc(N, range(N)),
-        "rho1": exc(N, [0]),
-        "rho2": exc(N, [499]),
+        "edge": exc(N, [0]),
+        "bulk": exc(N, [499]),
         "rho4": exc(N, [0, 1]),
         "rho5": exc(N, [2, 3]),
     }
@@ -171,8 +171,8 @@ def get_gmat(N):
     return {
         # "nn chain":     cp.nn(N, 1, 0.1, 0, 1),
         # "nn ring":      cp.nn(N, 1, 0.1, 1, 1),
-        "ssh chain0":   cp.ssh(N, 0, 1, .3, .7),
-        "ssh chain1":   cp.ssh(N, 0, 1, .7, .3),
+        "topological":   cp.ssh(N, 0, 1, .3, .7),
+        "trivial":   cp.ssh(N, 0, 1, .7, .3),
         "ssh ring":     cp.ssh(N, 1, 1, 0.5, 0.4),
     }
 
@@ -182,8 +182,8 @@ CONFIG=dict(
     tmax = 5,
     nt = 500,   # number of timesteps
 
-    states = ["rho1", "rho2"],
-    couplings = ["ssh chain0", "ssh chain1"],
+    states = ["edge", "bulk"],
+    couplings = ["topological", "trivial"],
     
     observable = "emission",
     save_fig = False,
