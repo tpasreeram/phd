@@ -104,8 +104,8 @@ def plot_eigenstate_heatmaps(evals, intensities, N: int,
     intensities = np.asarray(intensities)[keep]
 
     M     = len(evals)
-    ncols = min(ncols, M)
-    nrows = (M + ncols - 1) // ncols
+    ncols = min(ncols, M, 3)
+    nrows = 1#(M + ncols - 1) // ncols
 
     fig, axes = plt.subplots(nrows, ncols,
                               figsize=(3.5 * ncols, 3.2 * nrows),
@@ -114,8 +114,18 @@ def plot_eigenstate_heatmaps(evals, intensities, N: int,
                  fontsize=14, y=1.01)
 
 
-    for k in range(M):
+    # for k in range(M):
+    for k in [54, 169, 189]:
         r, c  = divmod(k, ncols)
+        if k == 54:
+            r = 0
+            c = 0
+        elif k == 169:
+            r = 0
+            c = 1
+        elif k ==189:
+            r = 0
+            c = 2
         ax    = axes[r][c]
 
         vmax = intensities[k].max() or 1.0
@@ -124,7 +134,14 @@ def plot_eigenstate_heatmaps(evals, intensities, N: int,
                           cmap=cmap, vmin=0, vmax=vmax,
                           aspect="equal")
         E     = evals[k]
-        label = (f"{title_prefix} {k}\n"
+        add = ""
+        if k == 54:
+            add = "(superradiant 10 & 11)"
+        elif k == 169:
+            add = "(subradiant 9 & 10)"
+        elif k == 189:
+            add = "(subradiant 6 & 14)"
+        label = (f"{title_prefix} {k} {add}\n"
                  f"E = {E.real:.3g}{E.imag:+.3g}i")
         ax.set_title(label, fontsize=8)
         ax.set_xlabel("site j", fontsize=7)
@@ -193,4 +210,4 @@ if __name__ == "__main__":
         # fig2.savefig(f"heff_dominant_{i:.2f}.png", dpi=150, bbox_inches="tight")
         # print(f"Saved: heff_dominant_{i:.2f}.png")
 
-        # plt.show()
+        plt.show()

@@ -109,9 +109,21 @@ def plot(result, tlist, obs):
         # if n==1:
         #     axes = [axes]
         
+        used_labels = set()
         for g_name, runs in grouped.items():
             for r_name, result_m in runs.items():
-                ax.plot(tlist, np.log10(result_m), label=f"{g_name} | {r_name}", linewidth=4)
+                linestyle = "--" if g_name == "trivial" else "-"
+                label = g_name if g_name not in used_labels else None
+
+                ax.plot(
+                    tlist,
+                    np.log10(result_m),
+                    label=label,
+                    linewidth=4,
+                    linestyle=linestyle
+                )
+
+                used_labels.add(g_name)
             ax.set_title("Emission", fontsize=16)
             ax.set_ylabel("Normalized Emission (log10)",fontsize=16)
             ax.set_xlabel("time", fontsize=16)
@@ -162,22 +174,19 @@ def get_rho(N):
     return {
         "rho0": exc(N, range(N)),
         "edge": exc(N, [0]),
-        "bulk": exc(N, [499]),
+        "bulk": exc(N, [4]),
         "rho4": exc(N, [0, 1]),
         "rho5": exc(N, [2, 3]),
     }
 
 def get_gmat(N):
     return {
-        # "nn chain":     cp.nn(N, 1, 0.1, 0, 1),
-        # "nn ring":      cp.nn(N, 1, 0.1, 1, 1),
-        "topological":   cp.ssh(N, 0, 1, .3, .7),
-        "trivial":   cp.ssh(N, 0, 1, .7, .3),
-        "ssh ring":     cp.ssh(N, 1, 1, 0.5, 0.4),
+        "topological":  cp.ssh(N, 0, 1, .3, .7),
+        "trivial":      cp.ssh(N, 0, 1, .7, .3),
     }
 
 CONFIG=dict(
-    N = 1000,  # Number of atoms
+    N = 8,  # Number of atoms
 
     tmax = 5,
     nt = 500,   # number of timesteps

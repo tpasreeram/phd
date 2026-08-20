@@ -25,6 +25,7 @@ def ssh_eigs(N, periodic, t0, t1, t2):
     idx = np.argsort(np.imag(vals))
     vals = vals[idx]
     vecs = vecs[:, idx]
+
     return vals, vecs
 
 def dssh_eigs(N, periodic, gamma, Gamma1, Gamma2):
@@ -69,7 +70,7 @@ def plot_eig(N, x0, x1, x2):
     # eigs_pbc = np.empty((lx1, N))
 
     for i in range(lx1):
-        eigs_obc[i], p = ssh_eigs(N, 0, x0, x1[i], x2)
+        eigs_obc[i], p = ssh_eigs(N, 0, x0, x1[i], x2[i])
         # eigs_pbc[i], q = dssh_eigs(N, 1, x0, x1[i], x2[i])
 
     eigs_obc = (np.array(eigs_obc))
@@ -78,7 +79,18 @@ def plot_eig(N, x0, x1, x2):
     for j in range(eigs_obc.shape[1]):
         plt.plot(x1, eigs_obc[:, j], 'r.', markersize=4)
         # plt.plot(x1, eigs_pbc[:, j], 'g.', markersize=4)
-    plt.axvline(x=2, color='k', linestyle='-', linewidth=2)
+    # plt.axvline(x=2, color='k', linestyle='-', linewidth=2)
+    ticks = np.arange(0, 1.01, 0.1)
+
+    # Default labels
+    labels = [f"{t:.1f}" for t in ticks]
+
+    # Change labels at 0.3 and 0.7
+    idx03 = np.where(np.isclose(ticks, 0.2))[0][0]
+    idx07 = np.where(np.isclose(ticks, 0.8))[0][0]
+    labels[idx03] = "A"
+    labels[idx07] = "B"
+    plt.xticks(ticks, labels)
     plt.show()
 
 def compute_ipr(vecs):
@@ -97,11 +109,11 @@ def plot_ipr(N, x0, x1, x2):
         ipr_obc[i] = compute_ipr(vecs_obc)
         ipr_pbc[i] = compute_ipr(vecs_pbc)
     
-    plt.plot(x1, np.log10(np.mean(ipr_obc, axis=1)), 'r.', markersize=4)
-    plt.axvline(x=0.3, color='k',linestyle='--',linewidth=1)
-    plt.axvline(x=0.7, color='k',linestyle='--',linewidth=1)
-    plt.xlabel("Gamma_1")
-    plt.ylabel("Inverse Participation")
+    plt.plot(x1, np.log10(np.mean(ipr_obc, axis=1)), 'r.', markersize=6)
+    plt.axvline(x=0.3, color='k',linestyle='--',linewidth=2)
+    plt.axvline(x=0.7, color='k',linestyle='--',linewidth=2)
+    plt.xlabel("Gamma_1", fontsize=14)
+    plt.ylabel("Inverse Participation", fontsize=14)
     # fig, axes = plt.subplots(10,5, figsize=(15,20))
     # for j, ax in enumerate(axes.flatten()):
         # ax.plot(x1, np.log10(ipr_obc[:, j]), 'r.', markersize=3)
@@ -157,13 +169,13 @@ def plot_realspace_profiles(N, gamma, Gamma1, Gamma2, state_indeces=[0,24,25,49]
     print("Saved: realspace_profiles.png")
 
 def main():
-    N = CONFIG["N"]
+    N = 50#CONFIG["N"]
 
-    Gamma1 = np.linspace(0.01, 0.99, 100)
-    Gamma2 = 1 - np.linspace(0.01, 0.99, 100)
-    gamma = 0
-    # plot_eig(N, gamma, Gamma1, Gamma2)
-    plot_ipr(N, gamma, Gamma1, Gamma2)
+    Gamma1 = np.linspace(0., 1., 100)
+    Gamma2 = 1 - np.linspace(0., 1., 100)
+    gamma = 1
+    plot_eig(N, gamma, Gamma1, Gamma2)
+    # plot_ipr(N, gamma, Gamma1, Gamma2)
     # plot_realspace_profiles(N, gamma, Gamma1, Gamma2)
 
 if __name__ == "__main__":
