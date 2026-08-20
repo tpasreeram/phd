@@ -1,0 +1,460 @@
+\documentclass{article}
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{bbold}
+
+\usepackage[style=numeric, sorting=none, giveninits=true]{biblatex}
+\addbibresource{bibs_final.bib}
+
+\hfuzz=50pt
+
+\title{Photon mediated interactions in open quantum systems}
+\author{Sreeram Vasudevan}
+\date{}
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+
+\doublespacing
+
+\section{Introduction}
+
+Photon-mediated interactions provide a powerful mechanism for coupling spatially
+separated quantum emitters, enabling studies of fundamental light-matter interactions
+and quantum technologies. When multiple emitters couple to the same photonic
+reservoir, the exchange of virtual and real photons mediates both coherent
+interactions and collective dissipation, giving rise to cooperative effects \cite{svidzinsky_cooperative_2010}. These interactions can result in drastic changes of the optical
+response, known as Dicke superradiance or subradiance when the
+ensemble is confined to regions of subwavelength light spacing \cite{dicke_coherence_1954,gross_superradiance_1982}. These effects are not limited to certain experimental platforms, they
+are instead collective effects that follow from the interactions between the
+electromagnetic field and the atoms, which can be explained via Green's functions
+formalisms. These effects appear in similar forms irregardless of the environment
+through which the electromagnetic field propagates. The most convenient
+environments in quantum optics are free space, waveguides, or optical cavities.
+
+Here, I examine the theoretical foundations of photon-mediated interactions, the
+platforms to realize them, and advances toward programmable interaction networks. I
+also take a look at possible challenges and a future outlook towards controllable
+networks of interactions.
+
+\section{Theory of photon-mediated interactions}
+
+Quantum emitters rarely exist in a closed system where all of the information is
+self-contained. More often, they interact with their surroundings and transfer
+information to the environment. This transfer allows both for the long-range couplings
+between emitters, but also serves as a channel for loss of photons. A complete
+description of quantum emitters then requires the framework of open quantum systems.
+In this section, I develop the model for describing inter-emitter interactions, show
+how the electromagnetic field induces coherent and dissipative interactions, and
+discuss effective descriptions that simplify resulting dynamics.
+
+\subsection{Light matter interactions}
+
+The two-level atom serves as the basis for simple models when considering
+inter-emitter interactions. Each emitter $i$ is taken to have two levels, with a ground
+state $|g_i\rangle$ and an excited state $|e_i\rangle$, separated by a transition
+frequency $\omega_i$. This atom is then coupled to the quantized electromagnetic field
+via the dipole interaction. This approximation is justified for atomic systems because
+suitable isolated transitions can be identified, minimizing the effect of neighboring
+energy levels on interaction dynamics. The total Hamiltonian for one two-level system
+coupled to a continuum of field modes consists of the field contribution, the atomic
+contribution, and the interaction between the atom and the field:
+\begin{equation}
+  \hat{H} = \hat{H}_{\mathrm{field}} + \hat{H}_{\mathrm{atom}} + \hat{H}_{\mathrm{int}}
+\end{equation}
+
+For a free field with wave number ${\bf k}$ and polarization $\mu$, we use creation
+and annihilation operators to dictate the number of photons in each mode
+\cite{cohen-tannoudji_atom-photon_1992, buhmann_dispersion_2013}:
+\begin{equation}
+\hat{H}_{\mathrm{field}} = \sum_{{\bf k},\mu} \hbar \omega_{\bf k}\left(\hat{a}_{{\bf
+k},\mu}^\dagger
+\hat{a}_{{\bf k},\mu}+\frac{1}{2}\right)
+\end{equation}
+
+The atomic contribution is
+\begin{equation}
+  \hat{H}_{\mathrm{atom}} = \frac{1}{2}\sum_i \hbar\omega_i\hat{\sigma}_z^{(i)}
+\end{equation}
+where we have the Pauli matrix $\hat{\sigma}_z = |e\rangle\langle e|-|g\rangle\langle
+g|$.
+The interactions between the atoms and the field are described by the atomic dipole
+and the electric field the dipole interacts with \cite{buhmann_dispersion_2013,knoll_qed_2000,dung_resonant_2002}:
+\begin{equation}
+  \hat{H}_{\mathrm{int}} = -\sum_i {\bf d}_j\cdot{\bf E}_j
+\end{equation}
+
+The dipole operator couples the ground and excited states of each atom ${\bf d}_j =
+d_{eg}\hat{\sigma}_+^{(j)}+d_{eg}^*\hat{\sigma}_-^{(j)}$, where $d_{eg}$ is the dipole moment
+corresponding to the atomic transition. We also expand the electric field operator as
+${\bf E}_j \propto \sum_{k,\mu}
+e^{-i\omega_kt}\hat{a}_{k,\mu}+e^{i\omega_kt}\hat{a}^\dagger_{k,\mu}$.
+We then make the rotating wave approximation to reach the interaction Hamiltonian for a single atom interacting with the field:
+\begin{equation}
+  \hat{H}_{\mathrm{int}} = \frac{\hbar}{2} \left(ge^{-i\Delta t}\hat{a} \hat{\sigma}_+ +
+  g^*e^{i\Delta t}\hat{a}^\dagger \hat{\sigma}_-\right)
+\end{equation}
+where $g$ is the coupling strength between the dipole and the bath mode, $\Delta$ is
+the detuning between the field mode and the atomic transition frequency, $\hat{a}$ and
+$\hat{a}^\dagger$ are the photonic annihilation and creation operators, and the Pauli
+matrices are defined $\hat{\sigma}_+ = |e\rangle\langle g|$,
+$\sigma_-=|g\rangle\langle e|$. The rotating wave approximation is made here to
+average out the counter rotating terms in the Hamiltonian (e.g.
+$\hat{a}\hat{\sigma}_-$ and $\hat{a}^\dagger\hat{\sigma}_+$). These terms accumulate phase
+too quickly to affect dynamics, as the system which accumulates phase much slower only
+sees the average of the oscillations of these quickly rotating terms. This
+approximation is valid under the assumption that the field mode interacting with the
+atomic dipole is near resonant to the atomic transition.
+
+The derived Hamiltonian provides a description of the coupled emitter-field system.
+However, solving for the dynamics of a full system becomes difficult due to the
+continuum of electromagnetic field modes. Since our interest lies in the emission of
+the emitters, it would be advantageous to eliminate out the photonic degrees of
+freedom.
+
+\subsection{Master equation}
+We can use the master equation to describe the dynamics of the system \cite{dzsotjan_quantum_2010,kastel_suppression_2005,meystre_elements_2007}:
+\begin{equation}
+  \dot{\rho} = -\frac{i}{\hbar}\left[\hat{H}, \rho\right] + \sum_i \Gamma_i\left(\hat{L}_i\rho
+    \hat{L}_i^\dagger -
+  \frac{1}{2}\left\{\hat{L}_i^\dagger \hat{L}_i, \rho\right\}\right)
+\end{equation}
+where $\Gamma_i$ is the coupling into the loss modes described by the operators $L_i$.
+When we set the coupling to the loss modes $\Gamma_i = 0$, we recover unitary dynamics
+$\dot{\rho}=-\frac{i}{\hbar}[H, \rho]$. By invoking the master equation, we make two
+key approximations, which we attribute a single name: the Born-Markov approximation.
+The Born approximation assumes that the bath is much larger than the system and that
+any effect of the system on the bath is negligible. This allows us to simply take the
+tensor product of the system and the bath to get the total density matrix. The Markov
+approximation is that of time scales: it assumes the bath correlation time is
+much smaller than that of the system relaxation time. If this is the case,
+then the bath effectively has no memory of any history of the system, and evolution
+only cares about the present state.
+
+The master equation provides a general description of emitter dynamics, but the
+coherent and dissipative couplings depend explicitly on the electromagnetic
+environment. A general approach is provided by the electromagnetic Green's tensor,
+which describes the response of an arbitrary medium to a point source.
+
+\subsection{Green's function formalism}
+We reframe the electric field operator in terms of the electromagnetic Green's
+tensor. In this way, the electric field is written in terms of the bosonic
+creation and annihilation operators \cite{gruner_green-function_1996,
+asenjo-garcia_atom-light_2017}:
+\begin{equation}
+  E(r,\omega)^+ = i\mu_0\omega^2\sqrt{\frac{\hbar\epsilon_0}{\pi}}\int
+  dr'\sqrt{\epsilon_I(r',\omega)}G(r, r', \omega)\hat{f}(r',\omega)
+\end{equation}
+
+The total electric field $E(r,\omega) = E^+ + E^-$, where $E^{+\dagger} = E^-$. Here, we define the function $\epsilon = \epsilon_R + \epsilon_I$ as the complex
+permittivity. The operators $\hat{\mathbf{f}}^\dagger$ and $\hat{\mathbf{f}}$ are the
+bosonic creation and annihilation operators corresponding to the electric field.
+Unlike the operators used in the free-space quantization, these operators incorporate
+both the electromagnetic field and reservoir degrees of freedom, ensuring the field
+satisfies the proper bosonic commutation relationships while also accurately
+describing the dissipative environment.
+The classical Green's
+function $G(r, r', \omega)$ describes the propagation of the electromagnetic field
+through the medium. In this treatment of the electric
+field, we assume that the only interactions between dipoles are those mediated by this
+medium-assisted electromagnetic field.
+
+We can then redefine the total field Hamiltonian in terms of these bosonic operators
+\cite{huttner_quantization_1992,knoll_qed_2000}:
+\begin{equation}
+  H_{\mathrm{field}} = \int d{\bf r}\int d\omega\, \hbar\omega
+  \hat{\mathbf{f}}^\dagger(\mathbf{r},\omega)\hat{\mathbf{f}}(\mathbf{r}, \omega)
+\end{equation}
+
+
+The emitters interact with via processes mediated by the photonic reservoir. For
+coherent processes, the photon is emitted into the reservoir by one emitter and is
+then absorbed by another emitter. This exchange interaction is the transfer of a
+virtual photon through the bath. Emitters can also dissipatively couple with one
+another, in a process where both atoms emit photons which constructively or
+destructively interfere, leading to phenomena such as subradiance and superradiance.
+
+Under this framework, we again trace out photonic degrees of freedom, apply the
+Born-Markov approximation, and retrieve the effective Hamiltonian
+\cite{dung_resonant_2002, chang_cavity_2012,chang_trapping_2014}:
+\begin{equation}
+  H = -\hbar \Delta_A \sum_{i=1}^N \sigma_{ee}^i - \hbar\sum_{i,j=1}^N
+  J^{ij}\sigma_+^i\sigma_-^j - \sum_{i=1}^N[\mathbf{d} \cdot
+  \hat{\mathbf{E}}^-(\mathbf{r}_i)\sigma_-^i + \mathbf{d}^*\cdot
+  \hat{\mathbf{E}}^+(\mathbf{r}_i)\sigma_+^i]
+\end{equation}
+
+We also can retrieve the Linbladian term
+\begin{equation}
+  L[\rho] = \sum_{i.j=1}^N \Gamma^{ij}\left( \sigma_-^i\rho\sigma_+^j - \frac{1}{2}
+  \left\{\sigma_+^i\sigma_-^j, \rho\right\} \right)
+\end{equation}
+
+From these two equations, we can retrieve two important terms: the spin exchange rate
+$J^{ij}$ and the collective decay rates $\Gamma^{ij}$. They can also be written in
+terms of the Green's functions as:
+\begin{align}
+  J^{ij} &= (\mu_0\omega^2/\hbar) \mathbf{d}^*\cdot \mathrm{Re}\mathbf{G(r}_i, {\bf
+  r}_j, \omega)\cdot {\bf d}\\
+  \Gamma^{ij} &= (2\mu_0\omega^2/\hbar) {\bf d}^* \cdot \mathrm{Im}\mathbf{G(r}_i,
+  {\bf r}_j, \omega)\cdot {\bf d}
+\end{align}
+
+Here we see how the coherent exchange processes and dissipative interactions between
+emitters are related to both the dipole elements of the transition of the atom you are
+using, as well as the Green's function provided by the medium through which the
+electromagnetic field propagates.
+
+
+
+\section{Experimental platforms}
+The formalism derived in Section 2 claims that every platform that couples emitters to
+a shared photonic environment is described by the same set of equations, differing in
+the form of the Green's functions, provided that the assumptions we made still hold.
+This section delves further into that claim and showcases some particular experimental
+realizations and applications of photon-mediated interactions. The photonic platforms
+of interest are free space, waveguides, and optical cavities.
+
+\subsection{Free space arrays}
+
+In free space, emitters are held at fixed positions with no engineered photonic
+structure between them. The relevant $\mathbf{G}$ is the free space dyadic Green's
+function, which is of the form \cite{novotny_principles_2012}
+\begin{equation}
+  \mathbf{G(r}) = \frac{k^2e^{ikr}}{4\pi\epsilon_0r}\left[ \left(1 + \frac{i}{kr} -
+    \frac{1}{(kr)^2} \right) \mathbb{1}+ \left(-1-\frac{3}{kr} + \frac{3}{(kr)^2}\right)
+\hat{\mathbf{r}}\otimes\hat{\mathbf{r}} \right]
+\end{equation}
+which has an oscillatory component in $r$ as well as terms weighted by $1/kr$,
+$1/(kr)^2$, and $1/(kr)^3$. The near field terms dominate at short separation
+distances and fall off steeply, so free-space coupling is short range by default. In
+this regime, we are able to see interesting collective phenomena such as superradiance
+and subradiance. 
+
+Ordered arrays of atoms in an optical lattice can be used to demonstrate some
+interesting effects. For example, a group was able to use subradiant modes that appear in
+sub-wavelength spaced Rubidium atoms in a 2-d lattice to create a single atom thick
+mirror for photons \cite{rui_subradiant_2020}. Figure \ref{fig:reflectance} shows how the reflectance of the 2d
+array increases as the probe laser gets closer to resonance. As previously mentioned
+in the theory section, the collective effects are much stronger when the atoms are
+driven on or near resonance. This paper further states that directly driven subradiant
+modes require a spatially ordered 2d array, which comes from the coupled dipole
+theory.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{aaaaa}
+  \caption{Transmittance and reflectance for the excitation of a 2d array. The
+  response is subradiant, and the transmission drops and the reflectance increases as
+the probe gets closer to resonance. The 2d array, when driven closer to resonance
+starts to exhibit collective phenomena. Reproduced from \cite{rui_subradiant_2020}.}
+  \label{fig:reflectance}
+\end{figure}
+
+We also explore another paper by Ruttley, et. al. where molecules in optical tweezers
+were used in entanglement experiments \cite{ruttley_long-lived_2025}. Ultracold polar molecules were trapped in
+arrays of optical tweezers, and then long-range interactions were engineered. In the
+previous example, we only considered sub-wavelength spacing, but here the molecules
+are spaced at ranges where generally only hertz-scale interactions dominate. By using
+microwave photons, they were able to couple two molecules trapped in magic-wavelength
+tweezers,
+and demonstrated a high level of entanglement fidelity of about 97.6\%.
+
+\subsection{Waveguide}
+In a waveguide, emitters couple to one or more guided modes of an effectively
+one-dimensional structure. These structures can range from optical fibers to photonic
+crystal waveguides to superconducting transmission lines. The guided mode of a
+waveguide propagates without transverse spreading, and thus the guided mode
+contribution of the Green's function is purely oscillatory \cite{barton_elements_1989,tai_dyadic_1971}:
+\begin{equation}
+  {\bf G} \propto e^{ik|z_i - z_j|}
+\end{equation}
+where $z_i$ denotes the position of emitter $i$.
+
+The non-decaying Green's function is what makes waveguides unique. The coherent
+and dissipative couplings between emitters remain non-negligible at long distances and
+is limited by propagation loss and disorder. The relative phase can be tuned by way of
+emitter spacing, and thus we are able to easily choose whether coupling is
+superradiant or subradiant.
+
+Superradiance can be found for atoms trapped along a photonic crystal waveguide (PCW).
+Goban, et. al. used an alligator photonic crystal waveguide to trap atoms and
+retrieve the collective dynamics that emerge \cite{goban_superradiance_2015}. These interactions provide a proof of
+concept for the idea of trapping cold atoms near PCWs in order to achieve
+superradiance. PCWs can then be used as a platform for manipulating collective
+effects, with applications in quantum matter and quantum simulation.
+
+We can take a further look at long range interactions from Tiranov, et. al.,
+where they study super- and subradiant dynamics between distant quantum emitters
+\cite{tiranov_collective_2023}. In
+this experiment, quantum dots are placed at distances of between 4 and 5 times the
+wavelength within the medium and the photonic crystal waveguide. One of the quantum
+dots is then excited, and the collective emission is then measured. Off resonance, the
+quantum dots emit as if they were independent, but as the drive gets closer to
+resonance, the collective emission shows the effects of both super- and subradiance.
+Super- and subradiance in this experiment originate from the constructive and
+destructive emission of the field emitted into the waveguide, and is seen by the rate
+of decay of the photon counts at the detectors.
+
+As mentioned previously, these effects are not platform specific, but rather a
+hallmark of photon mediated interactions.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{abcde}
+  \caption{Measured emission for a pair of emitters spaced by 1.25(3)$\mu$m both on
+  and off resonance. We see the collective effects of subradiant emission as we move
+closer to resonance. Reproduced from \cite{tiranov_collective_2023}}
+  \label{fig:pcw}
+\end{figure}
+
+Superconducting qubits, as well as the superconducting transmission lines are a great
+choice of waveguide in order to do this type of QED. Superconducting qubits have
+extremely high coupling coefficients to the transmission lines, and the lines behave
+like waveguides do, and allow for long range coupling \cite{mirhosseini_cavity_2019,astafiev_resonance_2010}. This is particularly useful for
+quantum information as we can create states that have long lifetimes, and we can also
+read them out. For example, Zanner, et. al. have been able to show coherent control
+over multi-qubit dark states in this type of waveguide QED \cite{zanner_coherent_2022}. In these systems, we are
+more interested in the states that cause subradiant emission, known as dark states.
+Dark states are very useful in quantum information as their long lifetimes are useful for
+quantum simulation and quantum computation \cite{lidar_decoherence-free_1998,paulisch_universal_2016}. They were able to create a four-transmon dark state which had a relaxation
+rate 160 times lower than that of the single qubit rate.
+\subsection{Optical cavities}
+In cavities, emitters couple mainly to a single cavity mode, set by the structure of
+the cavity. The Green's function is that of a standing wave, and is
+sinusoidal \cite{lodahl_interfacing_2015}. This allows all atoms to interact since they all see the same cavity mode.
+We can engineer the coupling strength as well as the ratio of coherent to dissipative
+couplings. For example, trapping the atoms at the peaks of the standing wave leads to
+a strong coupling to the cavity.
+
+An example of using cavities to demonstrate collective effects was the
+Thompson group, who were able to create a superradiant laser with less than one intracavity
+photon \cite{bohnet_steady-state_2012}. By trapping rubidium atoms in an optical cavity, they are able to create a
+narrow linewidth laser. The collective atomic dipoles store the coherence, and we are
+still able to get stimulated emission even with less than one photon in the cavity.
+
+\section{Engineering interaction networks}
+One interesting direction to look towards in the regime of photon mediated
+interactions are engineering arbitrary interaction networks. These systems allow for
+the study of more complicated structures, such as spin glass phases \cite{gopalakrishnan_frustration_2011,strack_dicke_2011} or
+topologically ordered states \cite{hung_quantum_2016}. With most of the
+methods mentioned in the previous sections, interactions are all-to-all. Any pair of
+emitters are able to couple due to them all sharing a photonic reservoir. If we wanted
+to create a network with select interactions turned off, the current model does not
+suffice. Finding a solution for this question is a direction some
+groups have recently been looking towards, where we now intend to create networks of
+interactions that are useful for applications such as quantum simulation or quantum
+sensing.
+
+\subsection{Effective descriptions}
+The formalism we have thus far used detailed the process by which we can describe
+dynamics in an open quantum system with simple two-level systems coupled to some
+electromagnetic bath. 
+Now, we wish to expand our toolbox to describe systems which can
+have multiple decay channels. We can use systems with multiple decay channels to
+facilitate selective spin-exchange interactions \cite{periwal_programmable_2021}.
+If we have an atom which is not strictly a two level system, it can
+have multiple excited states or multiple ground states, which increases the possible
+number of channels a photon can travel through and be emitted by. Reiter and Sorensen
+(2012) \cite{reiter_effective_2012} provide a method by which we can create an effective
+master equation for systems with multiple decay processes.
+
+The proposed method allows for the adiabatic elimination of the excited manifold,
+lowering the complexity of the system by creating an effective master equation of the
+ground states. We are able to adiabatically eliminate out the excited states because
+when the excited state is driven far off resonance or has very short decay times, the
+average population that lives in the excited state is almost zero. When applied to our
+system of emitters, this leads to a system in which we are left with jump operators
+acting solely on the ground manifold. This also leaves us with an effective spin model
+with interactions of the form $J^{ij}$ and $\Gamma^{ij}$, as in the previous section.
+
+As opposed to traditional adiabatic elimination, which is generally done at the level
+of the equations of motion, this method works on the operators and gives the effective
+operators without having to revert to the equations of motion.
+
+The effective Hamiltonian, in the effective description can be written
+\begin{equation}
+  H_{\mathrm{eff}} = H_g - \frac{1}{2}\left[ \hat{V}_- \sum_{f,l}
+  \left(H_{\mathrm{NH}}^{(f,l)}\right)^{-1}\hat{V}_+^{(f)} + \mathrm{H.c.} \right]
+\end{equation}
+where $H_g$ is the Hamiltonian that describes the ground state manifold of the system,
+$H_e$ describes the excited manifold, and $V_+$ and $V_-$ are the couplings between
+the ground and excited subspaces, where $V_+$ takes you from the ground subspace to
+the excited subspace, and $V_-$ the opposite. $H_{\mathrm{NH}}$ is the non-Hermitian
+Hamiltonian which is constructed with respect to each ground state $f$ and each
+coupled field mode $l$.
+
+We also derive the effective jump operator in a similar manner.
+\begin{equation}
+  L_{eff}^k = L_k \sum_{f,l} \left(H_{\mathrm{NH}^{(f,l)}}^{-1}\right)V_+^{(f)}
+\end{equation}
+
+This formalism allows us to go further beyond the emitter-bath picture derived in the
+previous section by allowing for further complications in the emitter itself.
+
+\subsection{Arbitrary interaction networks}
+The group of Schleier-Smith studied an ensemble of atoms in a cavity in order to
+engineer programmable interaction networks \cite{periwal_programmable_2021}. By introducing a magnetic field gradient along the
+cavity axis, they introduce position dependent Zeeman splittings, making spin-exchange
+processes between atoms at different locations off-resonant.
+Then, by modulating the drive frequency of the cavity, they were able to create energy
+sidebands that compensated for the energy mismatches. This allows them to selectively
+restore spin exchange correlations between chosen pairs of atoms, and engineer
+interaction graphs beyond the bare all-to-all cavity mediated coupling.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.7\linewidth]{mss}
+  \caption{Correlations for different combinations of magnetic field gradient.
+  Interactions stop becoming all-to-all, and we can keep only local interactions, or
+keep interactions that exist only at specific distances. Reproduced from
+\cite{periwal_programmable_2021}}
+  \label{fig:mss}
+\end{figure}
+
+This particular method works for creating interesting coherent networks, but this does
+not allow for the creation of dissipative networks with similar structures. Since the
+interesting couplings happen due to spin exchange processes, this cannot lead to a
+dissipative model.
+
+\section{Challenges and Outlook}
+
+The theoretical picture developed in Section 2 and the experimental platforms
+described in Section 3 show that coherent and dissipative photon-mediated interactions
+are both derived from the same initial formalism, and the platforms are able to
+exhibit the collective effects that arise from ensembles of coupled emitters. However,
+using this theoretical picture to generate a programmable network of interactions is a
+difficult problem.
+
+The shared-bath picture that allows for photon-mediated interactions happens to also
+be the big drawback when it comes to trying to program different networks. Since every
+emitter couples to the same reservoir modes, the default network is all-to-all, with
+the exact strengths and forms of the couplings set by the environment. The magnetic
+field gradient technique used by the Schlier-Smith group demonstrates one possible
+route to selectivity. Introducing site-dependent energy shifts can bring only chosen
+pairs into resonance, but this approach is inherently coherent. Reproducing the same
+programmability for purely dissipative networks is still an open question.
+
+The issue with dissipative interaction networks in this current formalism is that all
+of the emitters and their emissions interact with all of the same reservoir modes. If
+we were able to modify pairs of emitters such that only their emissions would
+interact, we could then engineer arbitrary networks. One answer
+would be to have separate, non-interacting modes which only couple to those emitters
+we would want to interact \cite{nair_topological_2023}. However, in practice, engineering large amounts
+of non-interacting modes to generate nearest-neighbor couplings becomes difficult. We
+can instead modify emissions off of each atom by introducing a dressing laser, leading
+to only emissions of the same frequency interacting
+\cite{vasudevan_engineering_nodate}. This process is 
+dissipative interaction networks.
+
+
+\addcontentsline{toc}{section}{References}
+% \bibliographystyle{abbrv}
+% \bibliography{bibs_final}
+\printbibliography
+\end{document}

@@ -1,0 +1,743 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage{amsmath, amssymb, mathtools, mathrsfs}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage[normalem]{ulem}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\hfuzz=90pt
+\numberwithin{equation}{section}
+
+\newcommand{\ket}[1]{| #1 \rangle}
+\newcommand{\bra}[1]{\langle #1 |}
+\newcommand{\braket}[2]{| #1 \rangle\langle #2 |}
+
+\begin{document}
+{\LARGE \textbf{Notes} \par}\vspace{1em}
+
+We setup a system to observe the evolution of $N$ three-level systems,
+each arranged in a $\Lambda$ configuration. We denote the ground states as $\ket{g}$
+and $\ket{f}$, and the excited state as $\ket{e}$.
+
+We drive the transition $\ket{g}\leftrightarrow\ket{e}$ with a classical laser, and
+allow a waveguide to mediate the transitions $\ket{f}\leftrightarrow\ket{e}$ and $\ket{g}\leftrightarrow\ket{e}$.
+
+\vspace{1em}{\bf\color{red} Note:} There are certain equations, or certain terms in
+equations that are colored in red. These are terms that have been thrown out due to
+some assumption that has been made. They have not been removed entirely in case said
+assumption is not valid.
+
+\section{Hamiltonian}
+
+We build up the Hamiltonian from four distinct contributions:
+\begin{equation}
+  \hat{H} = \hat{H}_F + \hat{H}_A + \hat{H}_{AF} + \hat{H}_{drive}\\
+\end{equation}
+
+Here, $\hat{H}_F$ is the free-field Hamiltonian, $\hat{H}_A$ is the atomic
+Hamiltonian, $\hat{H}_{AF}$ is the atom-field interaction, and $\hat{H}_{drive}$ is an
+external drive.
+
+We can now define the individual components:
+\begin{align*}
+  \hat{H}_F &= \int d^3r \int_0^\infty d\omega \hbar\omega \hat{\mathbf{f}}^\dagger
+  (\mathbf{r}, \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega)\\
+  \hat{H}_A &= \sum_{i=1}^N \hbar\omega_e \hat{\sigma}_{ee}^i + \hbar\omega_f
+  \hat{\sigma}_{ff}^i\\
+  \hat{H}_{AF} &= -\sum_{i=1}^N \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \left(
+  \mathbf{d}_i \hat{\sigma}_i + \mathbf{d}_i^* \hat{\sigma}_i^\dagger \right)\\
+  \hat{H}_{drive} &= -\sum_{i=1}^N \hbar \left( \frac{\Omega}{2} e^{i\omega_Lt}
+  \hat{\sigma}_i + \frac{\Omega^*}{2} e^{-i\omega_Lt} \hat{\sigma}_i^\dagger \right)
+\end{align*}
+
+The ground state $\ket{g}$ is taken as the reference with zero energy. Throughout, we
+use the notation $$\hat{\sigma}_{ab}^i \equiv \braket{a_i}{b_i}$$ to denote the atomic
+operator on the $i$-th atom.
+\vspace{1em}
+
+In the case of our system, we can expand out the Hamiltonians for the atom-field
+interaction as well as the external drive, giving us this total Hamiltonian
+($\hbar=1$):
+
+\begin{equation}
+  \begin{aligned}
+    \hat{H} = &\int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger (\mathbf{r},
+    \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N \omega_e
+    \hat{\sigma}_{ee}^i + \omega_f \hat{\sigma}_{ff}^i\\ &-\sum_{i=1}^N
+    \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \left( \mathbf{d}_{ge} \hat{\sigma}^i_{ge}
+    + \mathbf{d}_{ge}^* \hat{\sigma}^i_{eg} + \mathbf{d}_{fe} \hat{\sigma}^i_{fe} +
+    \mathbf{d}_{fe}^* \hat{\sigma}^i_{ef} \right)\\ &-\sum_{i=1}^N \frac{\Omega}{2}
+    e^{i\omega_Lt} \hat{\sigma}_{ge}^i + \frac{\Omega^*}{2} e^{-i\omega_Lt}
+    \hat{\sigma}_{eg}^i
+  \end{aligned}
+\end{equation}
+
+\subsection{Rotating Frame}
+We rotate out the laser frequency using the unitary transformation 
+\begin{equation}
+  \hat{U} = \sum_{i=1}^N \exp\left(it\left[\omega_L\,\hat{\sigma}_{ee}^i +
+      \omega_f\hat{\sigma}_{ff}^i\right]\right)
+      % + \int d^3r \int_0^\infty \omega
+      % \hat{\mathbf{f}}^\dagger (\mathbf{r}, \omega) \hat{\mathbf{f}}(\mathbf{r},
+      % \omega) d\omega\right]\right)
+\end{equation}
+
+
+The Hamiltonian evolves by \cite{SteckQAO}
+\begin{equation}
+  \hat{\tilde{H}} = \hat{U}\hat{H}\hat{U}^\dagger + i(\partial_t \hat{U})\hat{U}^\dagger
+\end{equation}
+
+After defining the detuning $\Delta = \omega_e - \omega_L$, we get the transformed
+Hamiltonian:
+\begin{equation}
+  \begin{aligned}
+    \hat{\tilde{H}} = & \int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger
+    (\mathbf{r}, \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N
+    \Delta \hat{\sigma}_{ee}^i -\sum_{i=1}^N \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot
+    \\&\left( e^{-i\omega_Lt}\mathbf{d}_{ge} \hat{\sigma}^i_{ge} +
+    e^{i\omega_Lt} \mathbf{d}_{ge}^* \hat{\sigma}^i_{eg} + e^{-i(\omega_L - \omega_f)t}
+    \mathbf{d}_{fe} \hat{\sigma}^i_{fe} + e^{i(\omega_L-\omega_f)t} \mathbf{d}_{fe}^*
+    \hat{\sigma}^i_{ef} \right)\\ &-\sum_{i=1}^N \left(\frac{\Omega}{2}
+    \hat{\sigma}_{ge}^i + \frac{\Omega^*}{2} \hat{\sigma}_{eg}^i\right)
+  \end{aligned}
+\end{equation}
+
+We also define the new transformed operators
+\begin{align}
+  \hat{E}_{g} &= \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \mathbf{d}_{ge} \cdot
+  e^{-i\omega_Lt}\\
+  \hat{E}^*_{g} &= \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \mathbf{d}^*_{ge} \cdot
+  e^{i\omega_Lt}\\
+  \hat{E}_{f} &= \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \mathbf{d}_{fe} \cdot
+  e^{-i(\omega_L-\omega_f)t}\\
+  \hat{E}^*_{f} &= \hat{\mathbf{E}}(\mathbf{r}_i, t) \cdot \mathbf{d}^*_{fe} \cdot
+  e^{i(\omega_L-\omega_f)t}
+\end{align}
+
+Using this, we rewrite out transformed Hamiltonian:
+\begin{equation}
+  \begin{aligned}
+    \hat{H} = & \int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger (\mathbf{r},
+    \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N \left(\Delta
+      \hat{\sigma}_{ee}^i + \omega_f
+    \hat{\sigma}_{ff}^i\right)\\&-\sum_{i=1}^N \left(\hat{E}_g\hat{\sigma}_{ge}^i +
+    \hat{E}^*_g\hat{\sigma}_{eg}^i + \hat{E}_f\hat{\sigma}_{fe}^i + \hat{E}^*_f
+    \hat{\sigma}_{ef}^i\right)- \left( \frac{\Omega}{2} \hat{\sigma}_{ge}^i +
+    \frac{\Omega^*}{2}\hat{\sigma}_{eg}^i\right)
+  \end{aligned}
+\end{equation}
+
+\subsection{Adiabatic Elimination}
+Following the operator formalism by Reiter and S\o{}rensen \cite{PhysRevA.85.032111},
+we split up the Hamiltonian into ground and excited state subspaces as well as the
+excitations and deexcitations:
+\begin{equation}
+  \hat{H} = \hat{H}_g + \hat{H}_e + \hat{V}_+ + \hat{V}_-
+\end{equation}
+
+Below, we have the separated components of the Hamiltonian
+\begin{align*}
+  \hat{H}_g &= \int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger (\mathbf{r},
+  \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N\omega_f
+  \hat{\sigma}_{ff}^i\\
+  \hat{H}_e &= \sum_{i=1}^N \Delta \hat{\sigma}_{ee}^i\\
+  \hat{V}_+ &= -\sum_{i=1}^N \left[\left( \hat{E}_g^* + \frac{\Omega^*}{2}\right)
+  \hat{\sigma}_{eg}^i + \hat{E}_f^* \hat{\sigma}_{ef}^i\right]\\
+  \hat{V}_- &= -\sum_{i=1}^N \left[\left( \hat{E}_g + \frac{\Omega}{2}\right)
+  \hat{\sigma}_{ge}^i + \hat{E}_f \hat{\sigma}_{fe}^i\right]
+\end{align*}
+
+The effective eliminated Hamiltonian is then defined
+\begin{equation}
+  \hat{H}_{\text{eff}} = -V_-  \hat{H}_e^{-1}  V_+ + \hat{H}_g
+\end{equation}
+
+Due to the selection rules, we end up with an effective Hamiltonian
+\begin{align*}
+  \hat{H} &=-\frac{1}{\Delta} \sum_{i=1}^N \left[\left( \hat{E}_g +
+  \frac{\Omega}{2}\right) \hat{\sigma}_{ge}^i + \hat{E}_f \hat{\sigma}_{fe}^i\right]
+  \hat{\sigma}_{ee}^i \left[\left( \hat{E}_g^* + \frac{\Omega^*}{2}\right)
+  \hat{\sigma}_{eg}^i + \hat{E}_f^* \hat{\sigma}_{ef}^i\right] + \hat{H}_g\\
+  &= -\frac{1}{\Delta} \sum_{i=1}^N \left[ \left( \hat{E}_g + \frac{\Omega}{2}\right)
+  \left( \hat{E}_g^* + \frac{\Omega^*}{2}\right)\hat{\sigma}_{gg}^i +
+  \left( \hat{E}_g + \frac{\Omega}{2}\right) \hat{E}_f^*\hat{\sigma}_{gf}^i\right.\\
+  &\hspace{5em}+ \left.\hat{E}_f \left( \hat{E}_g^* +
+  \frac{\Omega^*}{2}\right)\hat{\sigma}_{fg}^i + \hat{E}_f
+  \hat{E}_f^*\hat{\sigma}_{ff}^i\right] + \hat{H}_g\\
+\end{align*}
+
+Here, we make the assumption that the drive is entirely real, i.e. $\Omega =
+\Omega^*$. Now, the adiabatically eliminated Hamiltonian is
+
+\begin{equation}
+  \begin{aligned}
+    \hat{H} = & \int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger (\mathbf{r},
+    \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N \left(
+    \frac{\hat{E}_f \hat{E}_f^*}{\Delta} + \omega_f\right)\hat{\sigma}_{ff}^i\\
+    &+\frac{1}{\Delta} \sum_{i=1}^N \left(\hat{E}_g \hat{E}_g^* + \frac{\hat{E}_g
+    \cdot \Omega}{2} + \frac{\Omega \cdot \hat{E}^*_g}{2} + \frac{\Omega^2}{4}\right)
+    \hat{\sigma}_{gg}^i \\ &+ \frac{1}{\Delta}\sum_{i=1}^N \left[ \left( \hat{E}_g
+    \hat{E}_f^* + \frac{\Omega \cdot \hat{E}_f^*}{2} \right)\hat{\sigma}_{gf}^i +
+    \left( \hat{E}_f\hat{E}_g^* + \frac{\hat{E}_f \cdot \Omega}{2} \right)
+    \hat{\sigma}_{fg}^i \right]
+  \end{aligned}
+\end{equation}
+
+Here, we will make the assumption that the terms proportional to $\hat{\mathbf{E}}^2$
+are energy shift effects that can be neglected.
+
+\begin{equation}
+  \boxed{
+  \begin{aligned}
+    \hat{H} = & \int d^3r \int_0^\infty \omega \hat{\mathbf{f}}^\dagger (\mathbf{r},
+    \omega) \hat{\mathbf{f}}(\mathbf{r}, \omega) d\omega + \sum_{i=1}^N
+    \omega_f\hat{\sigma}_{ff}^i\\
+    &+\frac{1}{\Delta} \sum_{i=1}^N \left(\frac{\hat{E}_g
+    \cdot \Omega^*}{2} + \frac{\Omega \cdot \hat{E}^*_g}{2} + \frac{\Omega\Omega^*}{4}\right)
+    \hat{\sigma}_{gg}^i \\ &+ \frac{1}{\Delta}\sum_{i=1}^N \left[ \frac{\Omega \cdot
+    \hat{E}_f^*}{2} \hat{\sigma}_{gf}^i + \frac{\hat{E}_f \cdot \Omega^*}{2}
+    \hat{\sigma}_{fg}^i \right]
+  \end{aligned}}
+\end{equation}
+
+\subsection{Master Equation}
+
+In the Heisenberg picture, an operator $\hat{O}$ evolves by the equation
+\begin{equation}\dot{\hat{O}} = -\frac{i}{\hbar} [\hat{O}, \hat{H}]\end{equation}
+Since the operator $\hat{O}$ is atomic, we can make the observation that $[\hat{O},
+\hat{\mathbf{f}}] = [\hat{O}, \hat{\mathbf{E}}] = 0$.
+\begin{equation}
+\begin{aligned}
+  [\hat{O}, \hat{H}] = &\sum_{i=1}^N \omega_f [\hat{O}, \hat{\sigma}_{ff}^i] +
+  \frac{\Omega^2}{4\Delta}[\hat{O}, \hat{\sigma}_{gg}^i] + \left( \frac{\hat{E}_g \cdot \Omega}{2\Delta} + \frac{\Omega \cdot
+  \hat{E}_g^*}{2\Delta} \right)[\hat{O}, \hat{\sigma}_{gg}^i]\\ &+ \frac{\Omega \cdot
+  \hat{E}_f^*}{2\Delta} [\hat{O}, \hat{\sigma}_{gf}^i]+
+  \frac{\hat{E}_f \cdot \Omega}{2\Delta}
+  [\hat{O}, \hat{\sigma}_{fg}^i]
+\end{aligned}
+\end{equation}
+
+We can expand out the electric field in to the positive and negative field components,
+and for simplicities' sake, we only look at terms proportional to the electric field
+here:
+\begin{align*}
+  &[\mathbf{d}_{ge}e^{-i\omega_Lt}
+  (\hat{\mathbf{E}}^++\hat{\mathbf{E}^-})][\hat{O}, \hat{\sigma}_{gg}^i] +
+  [\mathbf{d}_{ge}^*e^{i\omega_Lt}
+  (\hat{\mathbf{E}}^++\hat{\mathbf{E}^-})]
+  \hat{E}_g^*[\hat{O}, \hat{\sigma}_{gg}^i]\\&+
+  [\mathbf{d}_{fe}^*e^{i(\omega_L-\omega_f)t}
+  (\hat{\mathbf{E}}^++\hat{\mathbf{E}^-})][\hat{O}, \hat{\sigma}_{gf}^i]+
+  [\mathbf{d}_{fe}e^{-i(\omega_L-\omega_f)t}
+  (\hat{\mathbf{E}}^++\hat{\mathbf{E}^-})][\hat{O}, \hat{\sigma}_{fg}^i]
+\end{align*}
+
+We assume normal ordering for the positive and negative components of the electric
+field, with the positive field component acting on the commutator from the left, and the
+negative field component acting on the commutator from the right.
+
+We apply the Markov approximation for the electric field as derived in
+Appendix \ref{appendix:markov}, and make the rotating wave approximation, omitting
+terms that have have fast oscillations:
+% RWA part 2! For the terms that are still rotating, we get rid of them.
+\begin{equation}\label{Odot}
+  \begin{aligned}
+  \dot{\hat{O}} = &-\frac{i}{\hbar}\sum_i \omega_f [\hat{O}, \hat{\sigma}_{ff}^i] +
+  \frac{\Omega^2}{4\Delta}[\hat{O}, \hat{\sigma}_{gg}^i]\\&+ \frac{\Omega}{2\Delta}
+  [\hat{O}, \hat{\sigma}_{gg}^i]\left[ \frac{\mu_0\Omega}{2\Delta}\sum_j \omega_L^2
+  \mathbf{G(r, r}_j, \omega_L) \mathbf{d}_{ge}\mathbf{d}_{ge}^*\hat{\sigma}_{gg}^j\;
+  {\color{red}+\;
+  \omega_{Lf}^2\mathbf{G(r, r}_j, \omega_{Lf})\mathbf{d}_{ge}\mathbf{d}_{fe}^*
+  \hat{\sigma}_{gf}^je^{-i\omega_ft}} \right]\\&+ \frac{\Omega}{2\Delta}
+  [\hat{O}, \hat{\sigma}_{gf}^i]\left[ \frac{\mu_0\Omega}{2\Delta}\sum_j {\color{red}\omega_L^2
+  \mathbf{G(r, r}_j, \omega_L) \mathbf{d}_{fe}^*\mathbf{d}_{ge}\hat{\sigma}_{gg}^j
+e^{-i\omega_ft}+}\; \omega_{Lf}^2\mathbf{G(r, r}_j, \omega_{Lf})\mathbf{d}_{fe}^*
+  \mathbf{d}_{fe} \hat{\sigma}_{fg}^j \right] \\&+ \frac{\Omega}{2\Delta}
+  \left[ \frac{\mu_0\Omega}{2\Delta}\sum_j \omega_L^2
+  \mathbf{G(r, r}_j, \omega_L) \mathbf{d}_{ge}^*\mathbf{d}_{ge}\hat{\sigma}_{gg}^j
+  {\color{red}\;+\;
+  \omega_{Lf}^2\mathbf{G(r, r}_j, \omega_{Lf})\mathbf{d}_{ge}^*\mathbf{d}_{fe}
+\hat{\sigma}_{gf}^je^{i\omega_ft}} \right][\hat{O}, \hat{\sigma}_{gg}^i]\\&+ \frac{\Omega}{2\Delta}
+\left[ \frac{\mu_0\Omega}{2\Delta}\sum_j {\color{red}\omega_L^2
+  \mathbf{G(r, r}_j, \omega_L) \mathbf{d}_{fe}\mathbf{d}_{ge}^*\hat{\sigma}_{gg}^j
+e^{i\omega_ft} +\;}\omega_{Lf}^2\mathbf{G(r, r}_j, \omega_{Lf})\mathbf{d}_{fe}
+  \mathbf{d}_{fe}^* \hat{\sigma}_{gf}^j \right][\hat{O}, \hat{\sigma}_{fg}^i]
+  \end{aligned}
+\end{equation}
+
+% We define the complex coupling rate(s)
+% \begin{align}
+%   g^{(1)}_{ij} &= J^{(1)}_{ij} + \frac{i}{2}\Gamma^{(1)}_{ij} =
+%   \frac{\mu_0\omega_L^2}{\hbar}\mathbf{d}^*_i \mathbf{G(r}_i, \mathbf{r}_j,
+%   \omega_L)\mathbf{d}_j\\
+%   g^{(2)}_{ij} &= J^{(2)}_{ij} + \frac{i}{2}\Gamma^{(2)}_{ij} =
+%   \frac{\mu_0\omega_{Lf}^2}{\hbar}\mathbf{d}^*_i \mathbf{G(r}_i, \mathbf{r}_j,
+%   \omega_{Lf})\mathbf{d}_j
+% \end{align}
+
+% How do we distinguish $\mathbf{d}_{ge}$ and $\mathbf{d}_{fe}$ if we define a general
+% coupling? $g_{ij}$ could be between $ge$ and $fe^*$ or $ge$ and $ge^*$. 
+Define the following couplings:
+\begin{align}
+  g^{(1)}_{ij} &= J^{(1)}_{ij} + \frac{i}{2}\Gamma^{(1)}_{ij} =
+  \frac{\mu_0\omega_L^2}{\hbar}\mathbf{d}_{ge}^{i*} \mathbf{G(r}_i, \mathbf{r}_j,
+  \omega_L)\mathbf{d}_{ge}^j\\
+  g^{(2)}_{ij} &= J^{(2)}_{ij} + \frac{i}{2}\Gamma^{(2)}_{ij} =
+  \frac{\mu_0\omega_{Lf}^2}{\hbar}\mathbf{d}^{i*}_{fe} \mathbf{G(r}_i, \mathbf{r}_j,
+  \omega_{Lf})\mathbf{d}^j_{fe}
+\end{align}
+
+We substitute these couplings in to equation \ref{Odot}:
+\begin{equation}
+  \begin{aligned}
+  \dot{\hat{O}} = &-\frac{i}{\hbar}\sum_i \omega_f [\hat{O}, \hat{\sigma}_{ff}^i] +
+  \frac{\Omega^2}{4\Delta}[\hat{O}, \hat{\sigma}_{gg}^i]\\&+ \frac{\Omega}{2\Delta}
+  [\hat{O}, \hat{\sigma}_{gg}^i]\left[ \frac{\hbar\Omega}{2\Delta}\sum_j
+  g^{(1)*}_{ij}\hat{\sigma}_{gg}^j 
+  \right]+ \frac{\Omega}{2\Delta}
+  [\hat{O}, \hat{\sigma}_{gf}^i]\left[ \frac{\hbar\Omega}{2\Delta}\sum_j  g_{ig}^{(2)}\hat{\sigma}_{fg}^j \right] \\&+ \frac{\Omega}{2\Delta}
+  \left[ \frac{\hbar\Omega}{2\Delta}\sum_j g_{ij}^{(1)}\hat{\sigma}_{gg}^j \right][\hat{O}, \hat{\sigma}_{gg}^i]+ \frac{\Omega}{2\Delta}
+  \left[ \frac{\hbar\Omega}{2\Delta}\sum_j  g_{ij}^{(2)*}\hat{\sigma}_{gf}^j \right][\hat{O}, \hat{\sigma}_{fg}^i]
+  \end{aligned}
+\end{equation}
+
+In the density matrix formalism, the expectation value of an operator $\hat{O}$ is
+given by \[\langle \hat{O} \rangle = \text{Tr}(\hat{\rho} O)\]
+
+
+We multiply both sides by $\rho(0)$ from the left and take the trace:
+
+\begin{equation}
+  \begin{aligned}
+    \text{Tr}\left\{\rho(0)\dot{\hat{O}}\right\} =
+    &-\frac{i}{\hbar}\text{Tr}\Bigg\{\sum_i \hbar\omega_f \rho(0)[\hat{O},
+      \hat{\sigma}_{ff}^i] +
+  \frac{\hbar\Omega^2}{4\Delta}\rho(0)[\hat{O}, \hat{\sigma}_{gg}^i]\\&+
+  \frac{\hbar\Omega^2}{4\Delta^2} \rho(0) \sum_{i,j} \left[ g_{ij}^{(1)*}[\hat{O},
+\hat{\sigma}_{gg}^i]\hat{\sigma}_{gg}^j + g_{ij}^{(1)}\hat{\sigma}_{gg}^j
+[\hat{O}, \hat{\sigma}_{gg}^i]\right]\\&+
+  \frac{\hbar\Omega^2}{4\Delta^2} \rho(0) \sum_{i,j} \left[ g_{ij}^{(2)}[\hat{O},
+\hat{\sigma}_{gf}^i]\hat{\sigma}_{fg}^j + g_{ij}^{(2)*}\hat{\sigma}_{gf}^j
+[\hat{O}, \hat{\sigma}_{fg}^i]\right] \Bigg\}\end{aligned}
+\end{equation}
+
+
+Using the cyclic property of the trace, we transfer the time dependence from the
+operators to the density matrix to get an equation of the form
+\begin{equation}
+  \text{Tr}\left\{\dot{\rho(t)}\hat{O}\right\} =
+  \text{Tr}\left\{\cdots\hat{O}(0)\right\}
+\end{equation}
+
+We write the master equation as
+
+\begin{equation}
+  \dot{\hat{\rho}} = \frac{i}{\hbar}[\hat{H}_0, \hat{\rho}] + \mathcal{L}[\hat{\rho}]
+\end{equation}
+
+where we define the conservative Hamiltonian
+\begin{equation}
+  \hat{H}_0 = \sum_{i=1}^N \hbar\omega_f\hat{\sigma}_{ff}^i + \sum_{i=1}^N
+  \frac{\hbar\Omega^2}{4\Delta}\hat{\sigma}_{gg}^i + \frac{\Omega^2}{4\Delta^2}
+  \sum_{i,j=1}^N \left(J_{ij}^{(1)}\hat{\sigma}_{gg}^i\hat{\sigma}_{gg}^j +
+  J_{ij}^{(2)}\hat{\sigma}_{gf}^i\hat{\sigma}_{fg}^j\right)
+\end{equation}
+
+and the dissipative Linbladian
+\begin{equation}
+  \mathcal{L}[\hat{\rho}] = \frac{\Omega^2}{4\Delta^2} \sum_{i,j=1}^N \sum_{\alpha = \{1,2\}}
+  \Gamma_{ij}^{(\alpha)} \left( \hat{L}_{\alpha}^j \hat{\rho}
+    \hat{L}_{\alpha}^{i\dagger}-
+  \frac{1}{2}\{\hat{L}_{\alpha}^{i\dagger}\hat{L}_{\alpha}^j,\hat{\rho}\} \right)
+\end{equation}
+
+with $\hat{L}_1 = \hat{\sigma}_{gg}$, and $\hat{L}_2 = \hat{\sigma}_{fg}$.
+
+\newpage
+\appendix
+\section{Markov Approximation}\label{appendix:markov}
+
+From \cite{PhysRevA.53.1818}, we define the electric field and the bosonic field
+opearators as:
+\begin{align}
+\hat{\mathbf{E}}(\mathbf{r}, \omega, t) &=
+i\mu_0\omega^2\sqrt{\frac{\hbar\epsilon_0}{\pi}} \int
+d\mathbf{r}'\sqrt{\epsilon_{\text{I}}(\mathbf{r}',\omega)}\mathbf{G(r,r}',\omega)
+\cdot\hat{\mathbf{f}}(\mathbf{r}',\omega, t)\\ \dot{\hat{\mathbf{f}}}(\mathbf{r},
+\omega, t) &= \frac{i}{\hbar} \left[ \hat{H}, \hat{\mathbf{f}}(\mathbf{r}, \omega, t)
+\right]
+\end{align}
+
+We recall the commutation relations
+\begin{gather}
+  [\hat{f}_k(\mathbf{r}, \omega), \hat{f}_{k'}^\dagger(\mathbf{r}', \omega')] =
+  \delta_{kk'} \delta(\mathbf{r-r}')\delta(\omega-\omega')\\
+  [\hat{f}_k(\mathbf{r}, \omega), \hat{f}_{k'}(\mathbf{r}',\omega')] = 0
+\end{gather}
+
+to solve for the bosonic field operator.
+
+Let $H_F$ denote the field component of the Hamiltonian, and $H_{\text{int}}$ be the
+rest of it.
+\begin{equation}
+  \dot{\hat{\mathbf{f}}}(\mathbf{r}, \omega, t) = \frac{i}{\hbar}\left( \left[
+  \hat{H}_F, \hat{\mathbf{f}}\right] + \left[ \hat{H}_{\text{int}},
+  \hat{\mathbf{f}}\right]\right)
+\end{equation}
+
+We solve the field commutator first
+\begin{align*}
+  \left[ \hat{H}_F, \hat{\mathbf{f}} \right] &= \int d^3\mathbf{r} \int_0^\infty
+  d\omega\omega \left[ \hat{\mathbf{f}}^\dagger (\mathbf{r}, \omega, t)
+  \hat{\mathbf{f}} (\mathbf{r}, \omega, t), \hat{\mathbf{f}}' (\mathbf{r}', \omega',
+  t')\right]\\ &= \int d^3\mathbf{r} \int_0^\infty d\omega\omega \left(
+  \left[ \hat{\mathbf{f}}^\dagger, \hat{\mathbf{f}}' \right]\hat{\mathbf{f}} +
+  \cancel{\hat{\mathbf{f}}^\dagger \left[ \hat{\mathbf{f}}, \hat{\mathbf{f}}'
+  \right]}\right)\\ &= -\omega\hat{\mathbf{f}}(\mathbf{r}, \omega, t)
+\end{align*}
+
+The interaction Hamiltonian has terms the look like either $\hat{E}_1\hat{E}_2^* \cdot
+\hat{\sigma}$, $\hat{E} \cdot \hat{\sigma}$, or just simply $\hat{\sigma}$.
+
+We start with the simplest term, $\hat{\sigma}$. The atomic operator acts separately
+from the bosonic field operator, leading to
+\begin{align*}
+  [\hat{\sigma}, \hat{\mathbf{f}}] = 0
+\end{align*}
+
+We can next take a look at terms in the form $\hat{E}\cdot\hat{\sigma}$.
+\begin{align*}
+  [\hat{E}\cdot\hat{\sigma}, \hat{\mathbf{f}}] &= \cancel{\hat{E}[\hat{\sigma},
+  \hat{\mathbf{f}}]} + [\hat{E}, \hat{\mathbf{f}}]\hat{\sigma}\\ &=
+  \left[\hat{\mathbf{E}}(\mathbf{r}, \omega, t) \cdot \mathbf{d} e^{\mp i\omega_Lt},
+  \hat{\mathbf{f}}(\mathbf{r}', \omega', t')\right]\hat{\sigma}\\ &= \left[ E^+ + E^-,
+  \hat{\mathbf{f}} \right]\hat{\sigma} \cdot \mathbf{d}e^{\mp i\omega_Lt}\\ &=
+  \left[i\mu_0\omega^2\sqrt{\frac{\hbar\epsilon_0}{\pi}} \int d\mathbf{r}'
+  \sqrt{\epsilon_{\text{I}}(\mathbf{r}', \omega)} \mathbf{G}^*(\mathbf{r, r}', \omega)
+  \cdot \hat{\mathbf{f}}^\dagger(\mathbf{r'}, \omega, t),
+  \hat{\mathbf{f}}(\mathbf{r}'', \omega', t')\right] \hat{\sigma}\cdot \mathbf{d}e^{\mp
+  i\omega_Lt}\\ &= -i\mu_0\omega^2 \sqrt{\frac{\hbar\epsilon_0
+  \epsilon_\text{I}(\mathbf{r}', \omega) }{\pi}} \mathbf{G}^*(\mathbf{r, r'}, \omega)
+  \cdot \mathbf{d}e^{\mp i\omega_Lt} \hat{\sigma}
+\end{align*}
+
+\color{red}
+We finally look at terms in the form $\hat{E}_1\hat{E}_2^* \cdot \hat{\sigma}$
+\begin{align*}
+  [\hat{E}_1\hat{E}_2^*\cdot\hat{\sigma}, \hat{\mathbf{f}}] &= \cancel{\hat{E}_1
+  \hat{E}_2^*[\hat{\sigma}, \hat{\mathbf{f}}]} + \hat{E}_1 [\hat{E}_2^*,
+  \hat{\mathbf{f}}] \hat{\sigma} + [\hat{E}_1, \hat{\mathbf{f}}]
+  \hat{E}_2^*\hat{\sigma}\\ &= \hat{\mathbf{E}}(\mathbf{r}, \omega, t) \left[
+  \hat{\mathbf{E}}(\mathbf{r}, \omega, t), \hat{\mathbf{f}}(\mathbf{r}', \omega',
+  t') \right] \mathbf{d}_1\mathbf{d}_2 \hat{\sigma} +  \left[
+  \hat{\mathbf{E}}(\mathbf{r}, \omega, t), \hat{\mathbf{f}}(\mathbf{r}', \omega', t')
+  \right] \hat{\mathbf{E}}(\mathbf{r}, \omega, t) \mathbf{d}_1\mathbf{d}_2
+    \hat{\sigma}\\ &= -2i\mu_0\omega^2 \sqrt{\frac{\hbar\epsilon_0
+  \epsilon_\text{I}(\mathbf{r}', \omega) }{\pi}} \mathbf{G}^*(\mathbf{r, r'},
+  \omega) \mathbf{d}_1\mathbf{d}_2 \; \hat{\mathbf{E}}(\mathbf{r}, \omega, t) \cdot
+  \hat{\sigma}
+\end{align*}
+\color{black}
+
+Now, we can put together the full commutator $[H_\text{int}, \hat{\mathbf{f}}]$.
+First, define $\alpha(\mathbf{r}) \equiv
+i\mu_0\omega^2\sqrt{\frac{\hbar\epsilon_0\epsilon_{\text{I}}(\mathbf{r},
+\omega)}{\pi}}$
+
+\begin{equation}
+\begin{aligned}
+  [\hat{H}_\text{int},\hat{\mathbf{f}}] = -1* &\sum_{i=1}^N
+  \color{red}
+  \frac{2\alpha(\mathbf{r})}{\Delta}\mathbf{G}^*(\mathbf{r}_i, \mathbf{r}, \omega)
+  \mathbf{d}_{fe}\mathbf{d}_{fe}^* \cdot \left(\hat{\mathbf{E}}(\mathbf{r}_i,\omega,t)
+\cdot \hat{\sigma}_{ff}^i\right)\\ &\color{red}+
+  \frac{2\alpha(\mathbf{r})}{\Delta}\mathbf{G}^*(\mathbf{r}_i, \mathbf{r}, \omega)
+  \mathbf{d}_{ge}\mathbf{d}_{fe}^* \cdot \left( \hat{\mathbf{E}}(\mathbf{r}_i, \omega,
+t) \cdot \hat{\sigma}_{gf}^i \right) \cdot e^{-i\omega_f t}\\&\color{red}+
+  \frac{2\alpha(\mathbf{r})}{\Delta}\mathbf{G}^*(\mathbf{r}_i, \mathbf{r}, \omega)
+  \mathbf{d}_{fe}\mathbf{d}_{ge}^* \cdot \left( \hat{\mathbf{E}}(\mathbf{r}_i, \omega,
+t) \cdot \hat{\sigma}_{fg}^i \right)\cdot e^{i\omega_ft}\\ &\color{red}+ \frac{2\alpha(\mathbf{r})}{\Delta}
+  \mathbf{G}^*(\mathbf{r}_i, \mathbf{r}, \omega) \mathbf{d}_{ge}\mathbf{d}_{ge}^*
+  \cdot \left(\hat{\mathbf{E}}(\mathbf{r}_i,\omega,t) \cdot \hat{\sigma}_{gg}^i
+  \right)\\ &+ \frac{\Omega\alpha(\mathbf{r})}{2\Delta} \mathbf{G}^*(\mathbf{r}_i,
+  \mathbf{r}, \omega)\cdot \left(\mathbf{d}_{ge}e^{-i\omega_Lt} +
+  \mathbf{d}_{ge}^*e^{i\omega_Lt}\right) \hat{\sigma}_{gg}^i \\ &+
+  \frac{\Omega\alpha(\mathbf{r})}{2\Delta} \mathbf{G}^*(\mathbf{r}_i, \mathbf{r},
+  \omega)\cdot \mathbf{d}_{fe}^*e^{i(\omega_L-\omega_f)t}\hat{\sigma}_{gf}^i\\ &+
+  \frac{\Omega\alpha(\mathbf{r})}{2\Delta} \mathbf{G}^*(\mathbf{r}_i, \mathbf{r},
+  \omega)\cdot \mathbf{d}_{fe}e^{-i(\omega_L-\omega_f)t}\hat{\sigma}_{fg}^i
+\end{aligned}
+\end{equation}
+
+Putting this together with the commutator with the field hamiltonian, the bosonic
+field operator is now defined:
+\begin{equation}\boxed{
+\begin{aligned}
+\dot{\hat{\mathbf{f}}}(\mathbf{r}, \omega, t) = &-i\omega\hat{\mathbf{f}}(\mathbf{r}, \omega,
+  t)\\ &+ \sum_{i=1}^N \frac{\Omega}{2\Delta}
+  \frac{\omega^2}{c^2} \sqrt{\frac{\epsilon_\text{I}(\mathbf{r,
+  \omega})}{\hbar\pi\epsilon_0}} \mathbf{G}^*(\mathbf{r}_i, \mathbf{r}, \omega) \cdot
+  \left( \left(\mathbf{d}_{ge}e^{-i\omega_Lt} +
+  \mathbf{d}_{ge}^*e^{i\omega_Lt}\right) \hat{\sigma}_{gg}^i
+  \right.\\&\hspace{10em}+\left. \mathbf{d}_{fe}^*e^{i(\omega_L-\omega_f)t}\hat{\sigma}_{gf}^i+
+  \mathbf{d}_{fe}e^{-i(\omega_L-\omega_f)t}\hat{\sigma}_{fg}^i\right)\\&\color{red}+ \sum_{i=1}^N \frac{2
+  \omega^2}{\Delta c^2} \sqrt{\frac{\epsilon_\text{I}(\mathbf{r},
+  \omega)}{\hbar\pi\epsilon_0}} \mathbf{G}^*(\mathbf{r}_i, \mathbf{r},
+  \omega)\hat{\mathbf{E}}(\mathbf{r}_i, \omega, t) \cdot \left( \mathbf{d}_{fe}
+  \mathbf{d}_{fe}^*\hat\sigma_{ff}^i + \mathbf{d}_{ge}
+    \mathbf{d}_{ge}^*\hat\sigma_{gg}^i \right.\\&\color{red}\hspace{13em}+ \left.\mathbf{d}_{ge}
+    \mathbf{d}_{fe}^*e^{-i\omega_ft}\hat\sigma_{gf}^i + \mathbf{d}_{fe}
+  \mathbf{d}_{ge}^*e^{i\omega_ft}\hat\sigma_{fg}^i \right)
+\end{aligned}}
+\end{equation}
+
+This is somewhat similar to the case derived for the 2 level case in
+\cite{PhysRevA.66.063810}, but now we have an extra term at the end proportional to
+$\hat{\mathbf{E}}\cdot\hat{\sigma}$.\\\vspace{1em}
+
+
+We can take the time derivative of the electric field operator
+\begin{align*}
+  \dot{\hat{\mathbf{E}}} &= -i\omega\hat{\mathbf{E}} + i\mu_0\omega^2\sqrt{\frac{\hbar\epsilon_0}{\pi}} \int
+  d\mathbf{r}'\sqrt{\epsilon_{\text{I}}(\mathbf{r}',\omega)}\mathbf{G(r,r}',\omega)
+  \cdot\dot{\hat{\mathbf{f}}}(\mathbf{r}',\omega, t)\\&= -i\omega\hat{\mathbf{E}}+
+  i\mu_0
+  \frac{\omega^4}{\pi c^2}\frac{\Omega}{2\Delta}\int d\mathbf{r}'
+  \epsilon_I(\mathbf{r}',\omega)
+  \mathbf{G}(\mathbf{r, r'}, \omega) \times \sum_{j=1}^N \mathbf{G}^*(\mathbf{r}_j,
+  \mathbf{r}, \omega)\cdot \hat{\mathbf{d}}^{(1)}_j(t) \\&\color{red}\hspace{1em}+ i\mu_0
+  \frac{\omega^4}{\pi c^2}\frac{2}{\Delta} \int d\mathbf{r}'\epsilon_\text{I}(\mathbf{r}',
+  \omega)\mathbf{G}(\mathbf{r, r}', \omega) \times \sum_{j=1}^N
+  \mathbf{G}^*(\mathbf{r}_j, \mathbf{r}, \omega)\cdot \hat{\mathbf{E}}(\mathbf{r}_j,
+  \omega, t) \cdot \hat{\mathbf{d}}^{(2)}_{j}(t)
+\end{align*}
+
+where the dipole opearators are defined
+\begin{align}
+  \hat{\mathbf{d}}^{(1)}_j(t) &= \left(\mathbf{d}_{ge}e^{-i\omega_Lt} +
+  \mathbf{d}_{ge}^*e^{i\omega_Lt}\right) \hat{\sigma}_{gg}^j
+  + \mathbf{d}_{fe}^*e^{i(\omega_L-\omega_f)t}\hat{\sigma}_{gf}^j+
+  \mathbf{d}_{fe}e^{-i(\omega_L-\omega_f)t}\hat{\sigma}_{fg}^j\\\color{red}
+  \hat{\mathbf{d}}^{(2)}_j(t) &\color{red}= \mathbf{d}_{fe}
+  \mathbf{d}_{fe}^*\hat\sigma_{ff}^j + \mathbf{d}_{ge}
+  \mathbf{d}_{ge}^*\hat\sigma_{gg}^j +\mathbf{d}_{ge}
+  \mathbf{d}_{fe}^*e^{-i\omega_ft}\hat\sigma_{gf}^j + \mathbf{d}_{fe}
+  \mathbf{d}_{ge}^*e^{i\omega_ft}\hat\sigma_{fg}^j
+\end{align}
+
+We apply the following Green's function identity
+\begin{equation}
+  \frac{\omega^2}{c^2}\int d^3\mathbf{s}\; \epsilon_{\text{I}}(\mathbf{s}, \omega)
+  G_{ik}(\mathbf{r,s}, \omega)G_{jk}^* (\mathbf{r',s}, \omega) = \text{Im}
+  \left\{G_{ij}(\mathbf{r,r'}, \omega)\right\}
+\end{equation}
+
+This results in our 
+\begin{equation}\label{Edot}
+\begin{aligned}
+  \dot{\hat{\mathbf{E}}} = &-i\omega\hat{\mathbf{E}}+
+  \frac{i\mu_0\omega^2}{\pi} \frac{\Omega}{2\Delta} \sum_{j=1}^N \text{Im}\left\{
+  \mathbf{G}(\mathbf{r, r}_j, \omega) \right\} \cdot \hat{\mathbf{d}}^{(1)}_j(t)\\ &\color{red}+
+  \frac{i\mu_0\omega^2}{\pi}\frac{2}{\Delta} \sum_{j=1}^N \text{Im}\{ \mathbf{G(r,
+  r}_j, \omega) \} \cdot \hat{\mathbf{E}}(\mathbf{r}_j, \omega, t)\cdot
+  \hat{\mathbf{d}}_{j}^{(2)}(t)
+\end{aligned}
+\end{equation}
+
+This can be simplified by collecting a couple terms:
+\begin{equation}\label{Edott}\boxed{
+\begin{aligned}
+  \dot{\hat{\mathbf{E}}} = -i\omega\hat{\mathbf{E}}(\mathbf{r},\omega, t)+\frac{i\mu_0\omega^2}{\Delta\pi}\sum_{j=1}^N \text{Im}\{ \mathbf{G(r, r}_j,
+  \omega) \} \cdot \left( \frac{\Omega}{2}\hat{\mathbf{d}}_j^{(1)}(t)\color{red} + 2
+  \hat{\mathbf{E}}(\mathbf{r}_j, \omega, t)\cdot
+\hat{\mathbf{d}}^{(2)}_j(t)\color{black} \right)
+\end{aligned}}
+\end{equation}
+
+Up until this point, I have included the terms that arise from the
+$\hat{\mathbf{E}}^2$ component of the eliminated Hamiltonian. As previously mentioned,
+we predict the $\hat{\mathbf{E}}^2$ terms will only show up as an energy shift, which
+will already be accounted for in the final equation, meaning that this will lead to a
+possible double counting of said energy shift. Therefore, from here onwards, these
+terms will be neglected.
+
+\vspace{1em} We define a slowly varying variable by $\hat{\mathbf{E}}(\mathbf{r},
+\omega) =
+e^{-i\omega t}\tilde{\mathbf{E}}(\mathbf{r}, \omega)$. Substituting into
+\ref{Edott} gives
+\begin{equation}
+  \dot{\tilde{\mathbf{E}}}(\mathbf{r}, \omega) =
+  \frac{i\mu_0\omega^2}{\Delta\pi}\sum_{j=1}^N \text{Im}\{ \mathbf{G(r, r}_j,
+    \omega) \} \cdot \frac{\Omega}{2}e^{i\omega t}\hat{\mathbf{d}}_j^{(1)}(t)
+\end{equation}
+
+Integrating this gives
+\begin{equation}
+  \tilde{\mathbf{E}}(\mathbf{r}, \omega, t) = \tilde{\mathbf{E}}(\mathbf{r}, \omega,
+  0) + \frac{i\mu_0\omega^2}{\Delta\pi}\sum_{j=1}^N \text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\} \cdot \int_0^tdt'
+  \frac{\Omega}{2}\hat{\mathbf{d}}_j^{(1)}(t')e^{i\omega t'}
+\end{equation}
+We multiply both sides by $e^{-i\omega t}$ and convert back to the normal
+variables.
+\begin{equation}
+  \mathbf{E}(\mathbf{r}, \omega, t) = \mathbf{E}(\mathbf{r}, \omega,
+  0)e^{-i\omega t} + \frac{i\mu_0\omega^2}{\Delta\pi}\sum_{j=1}^N \text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\} \cdot \int_0^tdt'
+  \frac{\Omega}{2}\hat{\mathbf{d}}_j^{(1)}(t')e^{-i\omega (t-t')}
+\end{equation}
+
+We substitute this expression into the field operator $\hat{\mathbf{E}}^+(\mathbf{r},
+t) = \int_0^\infty d\omega\hat{\mathbf{E}}^+(\mathbf{r}, \omega)$ to get
+\begin{equation}
+  \mathbf{E}^+(\mathbf{r}, t) = \mathbf{E}_0 +
+  \sum_{j=1}^N \int_0^\infty d\omega\,\frac{i\mu_0\omega^2}{\Delta\pi}
+  \text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\} \cdot \int_0^tdt'\,
+  \frac{\Omega}{2}\hat{\mathbf{d}}_j^{(1)}(t')e^{-i\omega (t-t')}
+\end{equation}
+
+where we define $\mathbf{E}_0 = \int_0^\infty \hat{\mathbf{E}}(\mathbf{r}, \omega,
+0)e^{-i\omega t}d\omega$.
+
+We isolate the time integral
+\begin{align*}
+  &\frac{\Omega}{2}\int_0^tdt' \left[\left(\mathbf{d}_{ge}e^{-i\omega_Lt'} +
+  \mathbf{d}_{ge}^*e^{i\omega_Lt'}\right) \hat{\sigma}_{gg}^j(t')
+  + \mathbf{d}_{fe}^*e^{i(\omega_L-\omega_f)t'}\hat{\sigma}_{gf}^j(t')+
+\mathbf{d}_{fe}e^{-i(\omega_L-\omega_f)t'}\hat{\sigma}_{fg}^j(t')\right]e^{-i\omega(t-t')}\\
+  &= \frac{\Omega}{2}\int_0^tdt'
+  \mathbf{d}_{ge}e^{-i(\omega-\omega_L)(t-t')}e^{-i\omega_Lt}\hat{\sigma}_{gg}^j(t') +
+  \mathbf{d}_{ge}^* e^{-i(\omega+\omega_L)(t-t')}e^{i\omega_Lt}\hat{\sigma}_{gg}^j(t')
+  \\&\hspace{4em}+
+  \mathbf{d}_{fe}e^{-i(\omega -
+  \omega_L+\omega_f)(t-t')}e^{-i(\omega_L-\omega_f)}\hat{\sigma}_{fg}^j(t') +
+  \mathbf{d}_{fe}^*e^{-i(\omega +
+  \omega_L-\omega_f)(t-t')}e^{i(\omega_L-\omega_f)}\hat{\sigma}_{gf}^j(t')
+\end{align*}
+
+We take the atomic operators to be slowly varying via the Markov approximation and
+move them out of the time integral.
+\begin{equation}
+  \begin{aligned}
+  &\hat{\sigma}_{gg}^j(t)e^{-i\omega_Lt}\int_0^tdt'
+  \mathbf{d}_{ge}e^{-i(\omega-\omega_L)(t-t')} + \hat{\sigma}_{gg}^j(t)e^{i\omega_Lt}\int_0^\infty
+  \mathbf{d}_{ge}^* e^{-i(\omega+\omega_L)(t-t')}
+  \\&+
+  \hat{\sigma}_{fg}^j(t)e^{-i(\omega_L-\omega_f)t}\int_0^\infty \mathbf{d}_{fe}e^{-i(\omega -
+  \omega_L+\omega_f)(t-t')}+ \hat{\sigma}_{gf}^j(t)e^{i(\omega_L-\omega_f)t}\int_0^\infty
+  \mathbf{d}_{fe}^*e^{-i(\omega +
+  \omega_L-\omega_f)(t-t')}
+  \end{aligned}
+\end{equation}
+
+We use the following relation
+\begin{equation}
+\int_{0}^tdt'\,e^{-i(\omega-\omega')(t-t')}=\zeta(\omega'-\omega)
+\end{equation}
+
+resulting in the following:
+\begin{equation}
+  \begin{aligned}
+    \hat{\mathbf{E}}^+(\mathbf{r}, t) &= \mathbf{E}_0 + \sum_{j=1}^N\int_0^\infty
+    d\omega\,\frac{i\mu_0\omega^2}{\pi}\frac{\Omega}{2\Delta}\text{Im}
+    \left\{\mathbf{G(r, r}_j, \omega)\right\} \cdot \\&\bigg(
+      \mathbf{d}_{ge}\hat{\sigma}_{gg}^j(t)e^{-i\omega_Lt}\zeta(\omega_L-\omega) +
+      \mathbf{d}_{ge}^*\hat{\sigma}_{gg}^j(t)e^{i\omega_Lt}\zeta(\omega_L+\omega)\\& +
+      \mathbf{d}_{fe}\hat{\sigma}_{fg}^j(t)e^{-i(\omega_L-\omega_f)t}\zeta(\omega_L-\omega_f-\omega) +
+    \mathbf{d}_{fe}^*\hat{\sigma}_{gf}^j(t)e^{i(\omega_L-\omega_f)t}\zeta(\omega_L-\omega_f+\omega)\bigg)
+  \end{aligned}
+\end{equation}
+
+We can get rid of the delta function in $\zeta(\omega_L+\omega)$ term since it doesn't
+live in the integral. The principal
+value integral is related to Casimir forces \cite{Chang_2014} and is small when far
+away from the dielectric \cite{Hung_2013}.
+
+If $\omega_L>\omega_f$, the $\sigma_{fg}$ term is allowed and the $\sigma_{gf}$ term
+is not allowed and vice versa if $\omega_L<\omega_f$. Here, we assume
+$\omega_L\neq\omega_f$. We choose $\omega_L>\omega_f$.
+\begin{equation}\label{a20}
+  \begin{aligned}
+    \hat{\mathbf{E}}^+(\mathbf{r}, t) &= \mathbf{E}_0 + \sum_{j=1}^N\int_0^\infty
+    d\omega\,\frac{i\mu_0\omega^2}{\pi}\frac{\Omega}{2\Delta}\text{Im}
+    \left\{\mathbf{G(r, r}_j, \omega)\right\} \cdot \left[\mathbf{d}_{ge}\hat{\sigma}_{gg}^j(t)\zeta(\omega_L-\omega) +
+    \mathbf{d}_{fe}\hat{\sigma}_{fg}^j(t)\zeta(\omega_L-\omega_f-\omega)\right]
+  \end{aligned}
+\end{equation}
+
+where we have redefined $\hat{\sigma}_{gg}^j(t) =
+\hat{\sigma}_{gg}^j(t)e^{-i\omega_Lt}$ and $\hat{\sigma}_{fg}^j(t) =
+\hat{\sigma}_{fg}^j(t)e^{-i(\omega_L-\omega_f)t}$.
+
+We now expand the function zeta
+\begin{equation}
+  \zeta(x) = \pi\delta(x) + \mathcal{P}\frac{i}{x}
+\end{equation}
+and insert it into \ref{a20}:
+\begin{align*}
+  \hat{\mathbf{E}}^+(\mathbf{r}, t) &= \mathbf{E}_0 + \sum_{j=1}^N \int_0^\infty
+  d\omega\, \frac{i\mu_0\omega^2}{\pi}\frac{\Omega}{2\Delta} \text{Im}\left\{
+  \mathbf{G(r, r}_j,\omega) \right\}\mathbf{d}_{ge}\hat{\sigma}_{gg}^j(t) \left(
+\pi\delta(\omega_L - \omega) + \mathcal{P}\frac{i}{\omega_L - \omega} \right)\\
+                                    &\hspace{2.5em}+
+\sum_{j=1}^N \int_0^\infty d\omega \frac{i\mu_0\omega^2}{\pi} \frac{\Omega}{2\Delta}
+\text{Im}\left\{ \mathbf{G(r, r}_j, \omega) \right\}
+\mathbf{d}_{fe}\hat{\sigma}_{fg}^j(t) \left( \pi\delta(\omega_L-\omega_f-\omega) +
+\mathcal{P}\frac{i}{\omega_L-\omega_f-\omega} \right)\\ &= \mathbf{E}_0 + \sum_{j=1}^N
+\mathbf{d}_{ge}\hat{\sigma}_{gg}^j \left[ \frac{i\mu_0\omega_L^2\Omega}{2\Delta}
+\text{Im} \left\{ \mathbf{G(r, r}_j, \omega_L) \right\} -
+\frac{\mu_0\Omega}{2\pi\Delta} \mathcal{P} \int_0^\infty d\omega \frac{\omega^2
+\text{Im}\left\{ \mathbf{G(r, r}_j, \omega) \right\}}{\omega_L-\omega} \right]\\
+                                                        &\hspace{2.5em}+ \sum_{j=1}^N
+\mathbf{d}_{fe}\hat{\sigma}_{fg}^j \left[ \frac{i\mu_0(\omega_L-\omega_f)^2\Omega}{2\Delta}
+\text{Im} \left\{ \mathbf{G(r, r}_j, \omega_L - \omega_f) \right\} -
+\frac{\mu_0\Omega}{2\pi\Delta} \mathcal{P} \int_0^\infty d\omega \frac{\omega^2
+\text{Im}\left\{ \mathbf{G(r, r}_j, \omega) \right\}}{\omega_L - \omega_f -\omega} \right]
+\end{align*}
+
+The greens function is analytic in the upper half of the complex plane, and the
+Kramers-Kronig relation is
+\begin{equation}
+  \text{Re}\left\{ \mathbf{G(r, r}_j, \omega_L) \right\} = \frac{1}{\pi}\mathcal{P}
+  \int_{-\infty}^\infty \frac{\text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\}}{\omega - \omega_L}
+ = \frac{2}{\pi}\mathcal{P}
+  \int_0^\infty \frac{\omega \text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\}}{\omega - \omega_L}
+\end{equation}
+by use of the property that the real part of the greens function is odd in omega.
+
+The principal value integral in our case has an extra $\omega$, and the correction
+term for that is derived in \cite{Dzsotjan_2011}:
+\begin{equation}
+  \mathcal{P}\int_0^\infty d\omega \frac{\omega^2 \text{Im}\left\{\mathbf{G(r, r}_j,
+  \omega)\right\}}{\omega-\omega_A} = \pi\omega_A^2 \text{Re}\left\{\mathbf{G(r, r}_j,
+  \omega_A)\right\} + \int_0^\infty d\kappa \kappa^2 \text{Re}\left\{\mathbf{G(r, r}_j,
+  \kappa)\right\} \frac{\omega_A}{\kappa^2+\omega_A^2}
+\end{equation}
+
+This integral term is negligible for separation distances much larger than the
+characteristic length \cite{Dzsotjan_2011}.
+
+Expanding out the integral, and combining the real and imaginary parts of the Greens
+function, we get
+\begin{equation}\boxed{
+  \hat{\mathbf{E}}^+(\mathbf{r}, t) = \mathbf{E}_0 + \frac{\mu_0\Omega}{2\Delta}
+  \sum_{j=1}^N \omega_L^2\mathbf{G(r, r}_j, \omega_L) \cdot
+  \mathbf{d}_{ge} \hat{\sigma}_{gg}^je^{-i\omega_Lt} + \omega_{Lf}^2
+  \mathbf{G(r, r}_j, \omega_{Lf}) \cdot \mathbf{d}_{fe}
+\hat{\sigma}_{fg}^je^{-i(\omega_L-\omega_f)t}
+}\end{equation}
+where $\omega_{Lf} = \omega_L-\omega_f$.
+
+\color{black}
+\newpage
+\bibliography{refs}{}
+\bibliographystyle{plain}
+\end{document}
