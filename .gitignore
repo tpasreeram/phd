@@ -23,5 +23,4 @@ archive/
 *.log
 *.out
 *.synctex.gz
-*.tex
 *.bib
