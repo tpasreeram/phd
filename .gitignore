@@ -12,6 +12,9 @@ archive/
 *.pdf
 
 # LaTeX Files
+*.run.xml
+*.toc
+*.bcf
 *.aux
 *.bbl
 *.blg
