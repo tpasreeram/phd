@@ -181,18 +181,22 @@ def get_rho(N):
 
 def get_gmat(N):
     return {
-        "topological":  cp.ssh(N, 0, 1, .3, .7),
-        "trivial":      cp.ssh(N, 0, 1, .7, .3),
+        # "topological":  cp.ssh(N, 0, 1, .3, .7),
+        # "trivial":      cp.ssh(N, 0, 1, .7, .3),
+        "1G":      cp.ssh(N, 0, 1, .7, .3),
+        "2G":      cp.ssh(N, 0, 2, .7, .3),
+        "5G":      cp.ssh(N, 0, 5, .7, .3),
+        "10G":      cp.ssh(N, 0, 10, .7, .3),
     }
 
 CONFIG=dict(
-    N = 8,  # Number of atoms
+    N = 6,  # Number of atoms
 
     tmax = 5,
     nt = 500,   # number of timesteps
 
-    states = ["edge", "bulk"],
-    couplings = ["topological", "trivial"],
+    states = ["bulk"],
+    couplings = ["1G", "2G", "5G", "10G"],
     
     observable = "emission",
     save_fig = False,

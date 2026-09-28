@@ -19,7 +19,7 @@ def exc(N, n_exc, vals):
 _operator_cache = {}
 def build_ops(gmat, N, n_exc, tol=1e-4):
     Gamma, alpha = np.linalg.eigh(gmat)
-
+    print(Gamma)
     key = ("a_ops", N, n_exc)
     if key in _operator_cache:
         a_ops = _operator_cache[key]
@@ -46,7 +46,6 @@ def get_ops(g_name, gmat, N, n_exc, observable):
         e_ops = [c.dag() * c for c in c_ops]
     elif observable == "population":
         e_ops = [a.dag() * a for a in a_ops]
-        print(a_ops)
     _operator_cache[key] = (c_ops, e_ops)
     return c_ops, e_ops
 
@@ -57,7 +56,7 @@ def get_ops(g_name, gmat, N, n_exc, observable):
 def sim(N, n_exc, rho, g_name, gmat, tlist, observable="emission"):
     c_ops, e_ops = get_ops(g_name, gmat, N, n_exc, observable)
     H = 0 * c_ops[0]
-    
+
     opts = {}#{"progress_bar":"tqdm"}
 
     result = mesolve(H, rho, tlist, c_ops, e_ops=e_ops, options=opts)
@@ -66,7 +65,7 @@ def sim(N, n_exc, rho, g_name, gmat, tlist, observable="emission"):
 def extract_modes(result):
     I = np.sum(result.expect, axis=0)
     e = 1e-12
-    return np.log10((I + e) / (I[0] + e))
+    return (I + e) / (I[0] + e)
 
 # ------------------------------
 # Plotting
@@ -134,8 +133,8 @@ def plot(result, tlist, obs):
 def get_rho(N, n_exc):
     return {
         "rho0": exc(N, n_exc, range(N)),
-        # "rho1": exc(N, n_exc, [0]),
-        # "rho2": exc(N, n_exc, [1]),
+        "rho1": exc(N, n_exc, [0]),
+        "rho2": exc(N, n_exc, [1]),
         # "9 & 10": exc(N, n_exc, [8, 9]),
         # "10 & 11": exc(N, n_exc, [9, 10]),
         # "6 & 14": exc(N, n_exc, [5, 13]),
@@ -145,8 +144,8 @@ def get_gmat(N):
     return {
         # "N=20, 0.2/0.8":    cp.ssh(N, 0, 1, .2, .8),
         # "N=20, 0.8/0.2":    cp.ssh(N, 0, 1, .8, .2),
-        # "trivial":          cp.ssh(N, 0, 1, .7, .3),
-        # "topological":      cp.ssh(N, 0, 1, .3, .7),
+        "trivial":          cp.ssh(N, 0, 1, .7, .3),
+        "topological":      cp.ssh(N, 0, 1, .3, .7),
         "dicke": np.ones((N,N)),
     }
 
@@ -162,8 +161,8 @@ def main():
 
     gmat_config = get_gmat(N)
     
-    states = ["rho0"]
-    couplings = ["dicke"]
+    states = ["rho1", "rho2"]
+    couplings = ["topological"]
     results = {}
 
 
@@ -174,7 +173,6 @@ def main():
             rho = rhos_config[r_name]
             label = f"{r_name} | {g_name}"
             results[label] = sim(N, n_exc, rho, g_name, g, tlist, obs)
-            results[label].plot_expect()
         
         # eval_k, mat = get_mode_matrix(g_name, g, N, n_exc=2, mode_index=0)
 
@@ -183,8 +181,9 @@ def main():
         # plt.xlabel("j")
         # plt.ylabel("i")
         # plt.title(f"Mode 0, eigenvalue={eval_k:.3g}")
-        plt.show()
-    # plot(results, tlist, obs)
+        # plt.show()
+    plot(results, tlist, obs)
+    # plt.show()
 
 if __name__ == "__main__":
     main()
